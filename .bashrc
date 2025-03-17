@@ -17,7 +17,7 @@ try-source /etc/bashrc
 # Bash unified history control (ref: )
 shopt -s histappend
 HISTCONTROL=ignoreboth
-HISTFILESIZE=10000
+HISTFILESIZE=100000
 PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"
 
 # Make bash autocomplete with up arrow.
