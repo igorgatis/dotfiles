@@ -17,7 +17,7 @@ try-source /etc/bashrc
 # Bash unified history control (ref: )
 shopt -s histappend
 HISTCONTROL=ignoreboth
-HISTFILESIZE=100000
+HISTFILESIZE=10000
 PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"
 
 # Make bash autocomplete with up arrow.
@@ -38,7 +38,6 @@ bind 'set completion-ignore-case on'
 alias ..='cd ..'
 alias du='du -h'
 alias grep='grep --color=auto'
-alias ll='ls -lah --color=auto'
 alias ls='ls -h --color=auto'
 # Other:
 alias venv='source .venv/bin/activate'
