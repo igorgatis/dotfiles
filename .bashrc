@@ -7,7 +7,6 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export EDITOR='vim'
 export CLICOLOR=1
-export HOMEBREW_AUTO_UPDATE_SECS=2592000
 
 try-source() {
   [ -r "$1" ] && source "$1"
@@ -55,6 +54,7 @@ try-source "$HOME/.config/bash/completion.sh"
 try-source "$HOME/.config/bash/ps1.sh"
 
 # Third party:
+try-source "$HOME/.config/bash/brew.sh"
 try-source "$HOME/.config/bash/llm.sh"
 try-source "$HOME/.config/bash/pyenv.sh"
 
