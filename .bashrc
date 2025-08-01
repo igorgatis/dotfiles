@@ -55,7 +55,7 @@ try-source "$HOME/.config/bash/ps1.sh"
 
 # Third party:
 try-source "$HOME/.config/bash/brew.sh"
-try-source "$HOME/.config/bash/llm.sh"
+try-source "$HOME/.config/bash/claude.sh"
 try-source "$HOME/.config/bash/pyenv.sh"
 
 # Last thing to allow local overrides.
