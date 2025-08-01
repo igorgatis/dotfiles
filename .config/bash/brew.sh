@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ -x "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+BREW=$(which /opt/homebrew/bin || which /home/linuxbrew/.linuxbrew/bin/brew)
+if [ -n "$BREW" ]; then
+  eval "$($BREW shellenv)"
+  export HOMEBREW_AUTO_UPDATE_SECS=2592000
 fi
-
-export HOMEBREW_AUTO_UPDATE_SECS=2592000

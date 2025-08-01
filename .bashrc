@@ -44,22 +44,20 @@ alias venv='source .venv/bin/activate'
 try-path() {
   [ -d "$1" ] && export PATH="$1:$PATH"
 }
-try-path "/opt/homebrew/bin"
+
+# Tools path (in reverse order of preference):
+try-source "$HOME/.config/bash/brew.sh" # Makes tools available.
 try-path "$HOME/bin"
 try-path "$HOME/bin_local"
 try-path "$HOME/go/bin"
-
+try-source "$HOME/.bashrc_local"
 # Now that PATH is set, we can source completion and ps1.
 try-source "$HOME/.config/bash/completion.sh"
+try-source "$HOME/.config/bash/git-completion.bash"
 try-source "$HOME/.config/bash/ps1.sh"
-
-# Third party:
-try-source "$HOME/.config/bash/brew.sh"
 try-source "$HOME/.config/bash/claude.sh"
-try-source "$HOME/.config/bash/pyenv.sh"
-
-# Last thing to allow local overrides.
-try-source "$HOME/.bashrc_local"
+# Now, install asdf shims, notice it must come last.
+try-source "$HOME/.config/bash/asdf.sh"
 
 # Cleanup.
 unset -f try-path
@@ -68,10 +66,3 @@ unset -f try-source
 # Makes sure this init script ends with error code 0.
 env true
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
