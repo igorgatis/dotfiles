@@ -2,29 +2,23 @@
 #!/bin/bash
 
 if command -v yadm >/dev/null 2>&1; then
-  local update_file="$HOME/.config/bash/.yadm_changes"
   local ts_file="$HOME/.config/bash/.yadm_last_check"
 
-  function check_yadm_async() {
+  function check_yadm() {
     if [[ -n "$(yadm status --porcelain)" ]]; then
-      echo "yadm: pending local changes." > "$update_file"
+      echo "yadm: pending local changes."
     else
       yadm fetch >/dev/null 2>&1
       if ! yadm diff --quiet HEAD origin/main; then
-        echo "yadm: update available." > "$update_file"
-      else
-        rm -f "$update_file"
+        echo "yadm: update available."
       fi
     fi
   }
 
-  if [[ -f "$update_file" ]]; then
-    local ts=$(date +%Y-%m-%d)
-    if [[ "$(cat "$ts_file" 2>/dev/null || echo "")" != "$ts" ]]; then
-      echo "$ts" > "$ts_file"
-      cat "$update_file"
-    fi
-  else
-    check_yadm_async & disown
+  # Check once a week.
+  local ts=$(date +%Y-%W)
+  if [[ "$(cat "$ts_file" 2>/dev/null || echo "")" != "$ts" ]]; then
+    echo "$ts" > "$ts_file"
+    check_yadm
   fi
 fi
