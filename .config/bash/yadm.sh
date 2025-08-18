@@ -15,8 +15,8 @@ if command -v yadm >/dev/null 2>&1; then
     fi
   }
 
-  # Check once a week.
-  local ts=$(date +%Y-%W)
+  # Check once a day.
+  local ts=$(date +%Y-%m-%d)
   if [[ "$(cat "$ts_file" 2>/dev/null || echo "")" != "$ts" ]]; then
     echo "$ts" > "$ts_file"
     check_yadm
