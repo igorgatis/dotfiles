@@ -7,11 +7,10 @@ if command -v yadm >/dev/null 2>&1; then
   function check_yadm() {
     if [[ -n "$(yadm status --porcelain)" ]]; then
       echo "yadm: pending local changes."
+    elif ! yadm diff --quiet HEAD origin/main; then
+      echo "yadm: remote changes available."
     else
       (yadm fetch >/dev/null 2>&1) & disown
-      if ! yadm diff --quiet HEAD origin/main; then
-        echo "yadm: update available."
-      fi
     fi
   }
 
