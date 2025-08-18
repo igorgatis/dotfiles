@@ -38,8 +38,6 @@ alias ..='cd ..'
 alias du='du -h'
 alias grep='grep --color=auto'
 alias ls='ls -h --color=auto'
-# Other:
-alias venv='source .venv/bin/activate'
 
 try-path() {
   [ -d "$1" ] && export PATH="$1:$PATH"
@@ -56,6 +54,7 @@ try-source "$HOME/.config/bash/completion.sh"
 try-source "$HOME/.config/bash/git-completion.bash"
 try-source "$HOME/.config/bash/ps1.sh"
 try-source "$HOME/.config/bash/claude.sh"
+try-source "$HOME/.config/bash/yadm.sh"
 # Now, install asdf shims, notice it must come last.
 try-source "$HOME/.config/bash/asdf.sh"
 
@@ -65,4 +64,3 @@ unset -f try-source
 
 # Makes sure this init script ends with error code 0.
 env true
-
