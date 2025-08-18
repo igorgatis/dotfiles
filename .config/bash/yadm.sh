@@ -1,6 +1,4 @@
 
-#!/bin/bash
-
 if command -v yadm >/dev/null 2>&1; then
   local ts_file="$HOME/.config/bash/.yadm_last_check"
 
