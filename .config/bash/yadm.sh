@@ -18,13 +18,13 @@ if command -v yadm >/dev/null 2>&1; then
     fi
   }
 
-  local ts=$(date +%Y-%m-%d)
-  if [[ "$(cat "$ts_file" 2>/dev/null || echo "")" != "$ts" ]]; then
-    echo "$ts" > "$ts_file"
-    if [[ -f "$update_file" ]]; then
+  if [[ -f "$update_file" ]]; then
+    local ts=$(date +%Y-%m-%d)
+    if [[ "$(cat "$ts_file" 2>/dev/null || echo "")" != "$ts" ]]; then
+      echo "$ts" > "$ts_file"
       cat "$update_file"
-    else
-      check_yadm_async & disown
     fi
+  else
+    check_yadm_async & disown
   fi
 fi
