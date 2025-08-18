@@ -8,7 +8,7 @@ if command -v yadm >/dev/null 2>&1; then
     if [[ -n "$(yadm status --porcelain)" ]]; then
       echo "yadm: pending local changes."
     else
-      yadm fetch >/dev/null 2>&1
+      (yadm fetch >/dev/null 2>&1) & disown
       if ! yadm diff --quiet HEAD origin/main; then
         echo "yadm: update available."
       fi
