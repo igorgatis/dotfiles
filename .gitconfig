@@ -30,3 +30,6 @@
 
 [user]
   name = Igor Gatis
+
+[init]
+	defaultBranch = main
