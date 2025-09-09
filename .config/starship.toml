@@ -1,11 +1,12 @@
+# -*- mode: ini -*-
 add_newline = false
 format = """
+$python\
 $username\
 $hostname\
 $directory\
 $git_branch\
 $git_status\
-$python\
 $character"""
 
 [username]
@@ -30,5 +31,5 @@ style = "bright-yellow bold"
 format = "([\\[$all_status$ahead_behind\\]]($style))"
 
 [python]
-format = "[( $virtualenv)]($style)"
+format = "[venv ]($style)"
 style = "cyan bold"

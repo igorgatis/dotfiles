@@ -1,88 +1,74 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# If not running interactively, don't do anything.
+[[ $- != *i* ]] && return
 
-if [[ -f "/opt/homebrew/bin/brew" ]] then
-  # If you're using macOS, you'll want this enabled
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-fi
+try-source() {
+  [[ -r "$1" ]] && source "$1"
+}
+add-path() {
+  export PATH="$1:$PATH"
+}
 
-# Set the directory we want to store zinit and plugins
-ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+try-source /etc/zshrc
 
-# Download Zinit, if it's not there yet
-if [ ! -d "$ZINIT_HOME" ]; then
-   mkdir -p "$(dirname $ZINIT_HOME)"
-   git clone --depth 1 https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
-fi
-
-# Source/Load zinit
-source "${ZINIT_HOME}/zinit.zsh"
-
-# Add in Powerlevel10k
-zinit ice depth=1; zinit light romkatv/powerlevel10k
-
-# Add in zsh plugins
-zinit light zsh-users/zsh-syntax-highlighting
-zinit light zsh-users/zsh-completions
-zinit light zsh-users/zsh-autosuggestions
-#zinit light Aloxaf/fzf-tab
-
-# Add in snippets
-zinit snippet OMZL::git.zsh
-zinit snippet OMZP::git
-zinit snippet OMZP::sudo
-#zinit snippet OMZP::archlinux
-#zinit snippet OMZP::aws
-zinit snippet OMZP::kubectl
-zinit snippet OMZP::kubectx
-zinit snippet OMZP::command-not-found
-
-# Load completions
-autoload -Uz compinit && compinit
-
-zinit cdreplay -q
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# Keybindings
-bindkey '^[[A' history-search-backward
-bindkey '^[[B' history-search-forward
-bindkey '^[w' kill-region
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export EDITOR='vim'
+export CLICOLOR=1
 
 # History
-HISTSIZE=5000
+HISTSIZE=10000
 HISTFILE=~/.zsh_history
 SAVEHIST=$HISTSIZE
 HISTDUP=erase
 setopt appendhistory
 setopt sharehistory
-setopt hist_ignore_space
-setopt hist_ignore_all_dups
-setopt hist_save_no_dups
-setopt hist_ignore_dups
 setopt hist_find_no_dups
+setopt hist_ignore_all_dups
+setopt hist_ignore_dups
+setopt hist_ignore_space
+setopt hist_save_no_dups
 
-# Completion styling
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-zstyle ':completion:*' menu no
-#zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
-#zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+# Completion
+setopt no_case_glob
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 
-# Aliases
-alias ls='ls --color'
-alias vi='vim'
+# Keybindings
+bindkey '^[[A' history-search-backward
+bindkey '^[[B' history-search-forward
+bindkey '^[w' kill-region
+# Allow jumping words.
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  bindkey '^[[1;5C' forward-word
+  bindkey '^[[1;5D' backward-word
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  bindkey '^[[1;3D' backward-word
+  bindkey '^[[1;3C' forward-word
+fi
+
+# Aliases:
 alias ..='cd ..'
+alias du='du -h'
+alias grep='grep --color=auto'
+alias ls='ls -h --color=auto'
+alias vi='vim'
 
-# Shell integrations
-#eval "$(fzf --zsh)"
-#eval "$(zoxide init --cmd cd zsh)"
+# Tools path (in reverse order of preference):
+source "$HOME/.config/sh/brew.sh" # Makes tools available.
+add-path "$HOME/bin"
+add-path "$HOME/go/bin"
+try-source "$HOME/.zshrc_local"
+source "$HOME/.config/sh/claude.sh"
+source "$HOME/.config/sh/yadm.sh"
+# Now, install asdf shims, notice it must come last.
+source "$HOME/.config/sh/asdf.sh"
 
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+# Prompt and completion:
+source "$HOME/.config/sh/completion.sh"
+source "$HOME/.config/sh/prompt.sh"
+
+# Cleanup.
+unset -f add-path
+unset -f try-source
+
+# Makes sure this init script ends with error code 0.
+env true
