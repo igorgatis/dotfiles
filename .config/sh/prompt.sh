@@ -1,7 +1,6 @@
 # Check for starship prompt
 if [[ -n "$DISABLE_STARSHIP" ]]; then
-  # Skip starship initialization
-  :
+  : # Skip starship initialization
 elif command -v starship &> /dev/null; then
   if [[ -n "${BASH_VERSION-}" ]]; then
     eval "$(starship init bash)"
@@ -46,14 +45,15 @@ __ps1_venv() {
   fi
 }
 
-__ps1_setup() {
-  if [[ -n "${BASH_VERSION-}" ]]; then
-    venv_p='\[\e[1;35m\]$(__ps1_venv)'
-    path_p='\[\e[1;34m\]\w'
-    branch_p='\[\e[1;33m\]$(__git_ps1 " [%s]")'
-    end_p='\[\e[0m\] $ '
-    export PS1="$venv_p$path_p$branch_p$end_p"
-  elif [[ -n "${ZSH_VERSION-}" ]]; then
+__ps1_setup_bash() {
+  venv_p='\[\e[1;35m\]$(__ps1_venv)'
+  path_p='\[\e[1;34m\]\w'
+  branch_p='\[\e[1;33m\]$(__git_ps1 " [%s]")'
+  end_p='\[\e[0m\] $ '
+  export PS1="$title_p$venv_p$path_p$branch_p$end_p"
+}
+
+__ps1_setup_zsh() {
     autoload -Uz vcs_info
     precmd_functions+=( vcs_info )
     setopt prompt_subst
@@ -64,14 +64,10 @@ __ps1_setup() {
     branch_p='%F{yellow}%B$vcs_info_msg_0_%b%f'
     end_p=' > '
     export PS1="$venv_p$path_p$branch_p$end_p"
-  fi
 }
 
-__ps1_setup
-
-# Set terminal title with hostname and shell name
 if [[ -n "${BASH_VERSION-}" ]]; then
-  export PS1="\[\e]0;bash - \h\a\]$PS1"
+  __ps1_setup_bash
 elif [[ -n "${ZSH_VERSION-}" ]]; then
-  export PS1=$'%{\e]0;zsh - %m\a%}'"$PS1"
+  __ps1_setup_zsh
 fi

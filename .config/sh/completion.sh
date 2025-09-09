@@ -12,5 +12,10 @@ if [[ -n "${BASH_VERSION-}" ]]; then
   _git_dd() { _git_diff ; }
   _git_p() { _git_diff ; }
 elif [[ -n "${ZSH_VERSION-}" ]]; then
-  autoload -Uz compinit && compinit
+  autoload -Uz compinit
+  # Full security check once a day.
+  for dump in ~/.zcompdump(N.mh+24); do
+    compinit
+  done
+  compinit -C
 fi

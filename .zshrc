@@ -1,6 +1,9 @@
 # If not running interactively, don't do anything.
 [[ $- != *i* ]] && return
 
+ENABLE_ZPROF=0
+[[ $ENABLE_ZPROF -eq 1 ]] && zmodload zsh/zprof
+
 try-source() {
   [[ -r "$1" ]] && source "$1"
 }
@@ -69,6 +72,8 @@ source "$HOME/.config/sh/prompt.sh"
 # Cleanup.
 unset -f add-path
 unset -f try-source
+
+[[ $ENABLE_ZPROF -eq 1 ]] && zprof
 
 # Makes sure this init script ends with error code 0.
 env true
