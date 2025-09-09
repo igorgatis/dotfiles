@@ -1,7 +1,5 @@
 
 if command -v yadm >/dev/null 2>&1; then
-  ts_file="$HOME/.config/sh/.yadm_last_check"
-
   function check_yadm() {
     if [[ -n "$(yadm status --porcelain)" ]]; then
       echo "yadm: pending local changes."
@@ -13,9 +11,9 @@ if command -v yadm >/dev/null 2>&1; then
   }
 
   # Check once a day.
-  ts=$(date +%Y-%m-%d)
-  if [[ "$(cat "$ts_file" 2>/dev/null || echo "")" != "$ts" ]]; then
-    echo "$ts" > "$ts_file"
+  check_file="$HOME/.config/sh/.yadm_last_check"
+  if [[ ! -f "$check_file" || $(find "$check_file" -mtime +1 2>/dev/null) ]]; then
+    touch "$check_file"
     check_yadm
   fi
 else

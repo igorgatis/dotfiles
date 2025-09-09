@@ -13,9 +13,10 @@ if [[ -n "${BASH_VERSION-}" ]]; then
   _git_p() { _git_diff ; }
 elif [[ -n "${ZSH_VERSION-}" ]]; then
   autoload -Uz compinit
-  # Full security check once a day.
-  for dump in ~/.zcompdump(N.mh+24); do
+  # Full security check once a day - bash compatible version
+  if [[ ! -f ~/.zcompdump || $(find ~/.zcompdump -mtime +1 2>/dev/null) ]]; then
     compinit
-  done
-  compinit -C
+  else
+    compinit -C
+  fi
 fi
