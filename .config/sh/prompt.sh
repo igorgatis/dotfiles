@@ -53,6 +53,21 @@ __ps1_setup_bash() {
   export PS1="$title_p$venv_p$path_p$branch_p$end_p"
 }
 
+__setup_zsh_autosuggestions() {
+    plugin_file="$HOME/.config/sh/zsh-autosuggestions.zsh"
+    if [[ -f "$plugin_file" ]]; then
+        source "$plugin_file"
+    else
+        autosuggest() {
+            echo "zsh-autosuggestions not found. Install now? (Y/n)"
+            read -r response
+            if [[ -z "$response" || "$response" =~ ^[yY]$ ]]; then
+                curl -o "$plugin_file" https://raw.githubusercontent.com/zsh-users/zsh-autosuggestions/master/zsh-autosuggestions.zsh
+            fi
+        }
+    fi
+}
+
 __ps1_setup_zsh() {
     autoload -Uz vcs_info
     precmd_functions+=( vcs_info )
@@ -70,4 +85,5 @@ if [[ -n "${BASH_VERSION-}" ]]; then
   __ps1_setup_bash
 elif [[ -n "${ZSH_VERSION-}" ]]; then
   __ps1_setup_zsh
+  __setup_zsh_autosuggestions
 fi

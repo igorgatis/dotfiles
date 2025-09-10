@@ -30,6 +30,7 @@
 
 [user]
   name = Igor Gatis
+	email = igorgatis@gmail.com
 
 [init]
 	defaultBranch = main
