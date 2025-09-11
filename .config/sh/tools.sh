@@ -150,25 +150,6 @@ __lazy_install "bat" \
   --linux="brew install bat" \
   --macos="brew install bat"
 
-__zoxide_init() {
-  if [[ -n "${BASH_VERSION-}" ]]; then
-    eval "$(zoxide init bash)"
-  elif [[ -n "${ZSH_VERSION-}" ]]; then
-    eval "$(zoxide init zsh)"
-  fi
-}
-
-__lazy_install "zoxide" \
-  --init=__zoxide_init \
-  --termux="pkg install zoxide" \
-  --linux="brew install zoxide" \
-  --macos="brew install zoxide"
-
-# Define z alias if not already defined
-if ! command -v z >/dev/null 2>&1; then
-  alias z="zoxide"
-fi
-
 __starship_init() {
   if [[ -n "${BASH_VERSION-}" ]]; then
     eval "$(starship init bash)"
