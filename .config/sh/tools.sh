@@ -8,6 +8,13 @@ export PATH="$HOME/go/bin:$PATH"
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
 # Then utilities
+if [[ -n "${BASH_VERSION-}" ]]; then
+  CURSHELL="bash"
+elif [[ -n "${ZSH_VERSION-}" ]]; then
+  CURSHELL="zsh"
+else
+  echo "ERROR: shell not supported." 1>&2
+fi
 
 __lazy_install() {
   local cmd="$1"
@@ -80,7 +87,8 @@ __daily() {
 
 __touch_daily_file() {
   daily_file="$HOME/.config/sh/.daily_check"
-  if [[ ! -f "$daily_file" || $(find "$daily_file" -mtime +1 2>/dev/null) ]]; then
+  if [[ ! -f "$daily_file" || \
+        $(find "$daily_file" -mtime +1 2>/dev/null) ]]; then
     touch "$daily_file"
     unset -f daily
     __daily() {
@@ -127,11 +135,7 @@ __asdf_init() {
   export ASDF_PYTHON_VERSION=system
   export ASDF_NODEJS_VERSION=system
   export ASDF_GOLANG_VERSION=system
-  if [[ -n "${BASH_VERSION-}" ]]; then
-    eval "$(asdf completion bash)"
-  elif [[ -n "${ZSH_VERSION-}" ]]; then
-    eval "$(asdf completion zsh)"
-  fi
+  eval "$(asdf completion $CURSHELL)"
 }
 
 __lazy_install "asdf" \
@@ -140,29 +144,21 @@ __lazy_install "asdf" \
   --linux="brew install asdf" \
   --macos="brew install asdf"
 
-__lazy_install "claude" \
-  --termux="npm install -g @anthropic-ai/claude-code" \
-  --linux="brew install --cask claude-code" \
-  --macos="brew install --cask claude-code"
-
 __lazy_install "bat" \
   --termux="pkg install bat" \
   --linux="brew install bat" \
   --macos="brew install bat"
 
-__starship_init() {
-  if [[ -n "${BASH_VERSION-}" ]]; then
-    eval "$(starship init bash)"
-  elif [[ -n "${ZSH_VERSION-}" ]]; then
-    eval "$(starship init zsh)"
-  fi
-}
-
 __lazy_install "starship" \
-  --init=__starship_init \
+  --init="eval \"\$(starship init $CURSHELL)\"" \
   --termux="pkg install starship" \
   --linux="brew install starship" \
   --macos="brew install starship"
+
+__lazy_install "claude" \
+  --termux="npm install -g @anthropic-ai/claude-code" \
+  --linux="brew install --cask claude-code" \
+  --macos="brew install --cask claude-code"
 
 ai() {
   flags="-p"
@@ -177,4 +173,17 @@ ai() {
 No markdown. If answer is a command, just print it." \
   "${flags}" "$*"
 }
+
+# For some reason, must come at the end.
+__lazy_install "zoxide" \
+  --init="eval \"\$(zoxide init $CURSHELL)\"" \
+  --termux="pkg install zoxide" \
+  --linux="brew install zoxide" \
+  --macos="brew install zoxide"
+
+if ! command -v z >/dev/null 2>&1; then
+  z() {
+    zoxide "$*"
+  }
+fi
 
