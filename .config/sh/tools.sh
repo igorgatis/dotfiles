@@ -71,7 +71,6 @@ __lazy_install() {
           if [[ -n \"$init_func\" ]]; then
             eval \"$init_func\"
           fi
-          \"$cmd\" \"\$@\"
         fi
         ;;
       *)
