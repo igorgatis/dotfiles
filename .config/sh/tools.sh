@@ -54,14 +54,6 @@ __lazy_install() {
     return 0
   fi
 
-  if [[ -z "$install_cmd" ]]; then
-    eval "$cmd() {
-      echo \"$cmd is unavailable on this OS.\"
-      return 1
-    }"
-    return 0
-  fi
-
   eval "$cmd() {
     read -p \"Install $cmd? [Y/n]: \" response
     case \"\$response\" in
@@ -147,6 +139,16 @@ __lazy_install "bat" \
   --termux="pkg install bat" \
   --linux="brew install bat" \
   --macos="brew install bat"
+
+__lazy_install "hexyl" \
+  --termux="pkg install hexyl" \
+  --linux="brew install hexyl" \
+  --macos="brew install hexyl"
+
+__lazy_install "rg" \
+  --termux="pkg install ripgrep" \
+  --linux="brew install ripgrep" \
+  --macos="brew install ripgrep"
 
 __lazy_install "starship" \
   --init="eval \"\$(starship init $CURSHELL)\"" \
