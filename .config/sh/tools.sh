@@ -55,7 +55,8 @@ __lazy_install() {
   fi
 
   eval "$cmd() {
-    read -p \"Install $cmd? [Y/n]: \" response
+    printf \"Install $cmd? [Y/n]: \"
+    read response
     case \"\$response\" in
       [yY]*|'')
         if eval \"$install_cmd\"; then
@@ -81,7 +82,7 @@ __touch_daily_file() {
   if [[ ! -f "$daily_file" || \
         $(find "$daily_file" -mtime +1 2>/dev/null) ]]; then
     touch "$daily_file"
-    unset -f daily
+    unset -f __daily
     __daily() {
       "$@"
     }
@@ -149,6 +150,11 @@ __lazy_install "rg" \
   --termux="pkg install ripgrep" \
   --linux="brew install ripgrep" \
   --macos="brew install ripgrep"
+
+__lazy_install "fd" \
+  --termux="pkg install fd-find" \
+  --linux="brew install fd" \
+  --macos="brew install fd"
 
 __lazy_install "starship" \
   --init="eval \"\$(starship init $CURSHELL)\"" \
