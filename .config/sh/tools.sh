@@ -141,6 +141,11 @@ __lazy_install "bat" \
   --linux="brew install bat" \
   --macos="brew install bat"
 
+__lazy_install "eza" \
+  --termux="pkg install eza" \
+  --linux="brew install eza" \
+  --macos="brew install eza"
+
 __lazy_install "hexyl" \
   --termux="pkg install hexyl" \
   --linux="brew install hexyl" \
@@ -161,6 +166,11 @@ __lazy_install "starship" \
   --termux="pkg install starship" \
   --linux="brew install starship" \
   --macos="brew install starship"
+
+__lazy_install "gh" \
+  --termux="pkg install gh" \
+  --linux="brew install gh" \
+  --macos="brew install gh"
 
 __lazy_install "claude" \
   --termux="npm install -g @anthropic-ai/claude-code" \
