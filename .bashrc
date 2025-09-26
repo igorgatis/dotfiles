@@ -1,7 +1,14 @@
+if [ -f ~/.bash_debug ]; then
+  echo "Script called from: ${BASH_SOURCE[1]:-unknown} (line ${BASH_LINENO[0]:-unknown}): $-"
+  echo "__BASHRC_LOADED=${__BASHRC_LOADED:-}"
+  echo "PS1=${PS1:-}"
+  echo "PROMPT_COMMAND=${PROMPT_COMMAND:-}"
+fi
+
 # If not running interactively, don't do anything.
 [[ $- != *i* ]] && return
 # Make sure this file is sourced once.
-[[ $__BASHRC_LOADED ]] && return
+[[ ${__BASHRC_LOADED:-} ]] && return
 export __BASHRC_LOADED=1
 
 export LC_ALL=en_US.UTF-8
