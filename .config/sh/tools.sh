@@ -157,7 +157,7 @@ __lazy_install "rg" \
   --macos="brew install ripgrep"
 
 __lazy_install "fd" \
-  --termux="pkg install fd-find" \
+  --termux="pkg install fd" \
   --linux="brew install fd" \
   --macos="brew install fd"
 
