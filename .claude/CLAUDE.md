@@ -1,0 +1,5 @@
+- Avoid adding code comments.
+- When writing unittests, prefer more coarse grained tests. Always inclue a "happy path" case.
+- Remove trailing whitespaces unless told otherwise.
+- Keep code under 100 cols.
+- Avoid emojis

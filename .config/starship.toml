@@ -1,0 +1,36 @@
+# -*- mode: ini -*-
+add_newline = false
+format = """
+${env_var.VIRTUAL_ENV}\
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_status\
+$character"""
+
+[username]
+format ="[($user )]($style)"
+
+[hostname]
+ssh_only = true
+format = "[($hostname )]($style)"
+style = "bright-green bold"
+
+[directory]
+truncation_length = -1
+truncate_to_repo = false
+format = "[($home_symbol)($path)]($style)"
+style = "blue bold"
+
+[git_branch]
+format = "[( \\[$branch\\])]($style)"
+style = "bright-yellow bold"
+
+[git_status]
+format = "([\\[$all_status$ahead_behind\\]]($style))"
+
+[env_var.VIRTUAL_ENV]
+format = "[venv ]($style)"
+style = "cyan bold"
+

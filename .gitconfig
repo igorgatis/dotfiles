@@ -1,0 +1,36 @@
+[alias]
+  b = branch
+  co = checkout
+  dd = diff --relative --name-status
+  diff = diff --relative
+  l = log --decorate
+  p = diff --relative --name-only
+  s = status -b -s
+
+[color]
+  ui = auto
+
+[credential]
+  helper = cache --timeout=3600
+
+[diff]
+  color = auto
+
+[fetch]
+	prune = true
+
+[merge]
+  tool = vimdiff3
+
+[mergetool]
+  keepBackup = false
+
+[push]
+	autoSetupRemote = true
+
+[user]
+  name = Igor Gatis
+	email = igorgatis@gmail.com
+
+[init]
+	defaultBranch = main
