@@ -9,8 +9,10 @@ try-source() {
 
 try-source /etc/zshrc
 
-export LC_ALL=en_US.UTF-8
-locale &>/dev/null || export LC_ALL=C
+export LC_ALL=C
+if locale -a 2>/dev/null | grep -q en_US.UTF-8; then
+  export LC_ALL=en_US.UTF-8
+fi
 export LANG=$LC_ALL
 export EDITOR='vim'
 export CLICOLOR=1
