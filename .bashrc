@@ -2,7 +2,8 @@
 [[ $- != *i* ]] && return
 
 export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
+locale &>/dev/null || export LC_ALL=C
+export LANG=$LC_ALL
 export EDITOR='vim'
 export CLICOLOR=1
 
@@ -42,3 +43,6 @@ source "$HOME/.config/sh/prompt.sh"
 
 # Makes sure this init script ends with error code 0.
 env true
+
+# uv
+export PATH="/Users/igorgatis/.local/bin:$PATH"
