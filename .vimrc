@@ -1,5 +1,7 @@
 syntax on
 set nocompatible  " be iMproved.
+set encoding=utf-8
+scriptencoding utf-8
 colorscheme desert
 filetype off
 
