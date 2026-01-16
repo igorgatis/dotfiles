@@ -3,3 +3,5 @@
 - Remove trailing whitespaces unless told otherwise.
 - Keep code under 100 cols.
 - Avoid emojis
+- When starting background tasks, print the log file path in case there is one.
+- NEVER store passwords, secrets, or API keys in version-controlled files. No exceptions.
