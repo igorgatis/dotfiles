@@ -1,19 +1,15 @@
-# First, setup PATH
-if [[ -d "/opt/homebrew/bin" ]]; then
-  export PATH="/opt/homebrew/bin:$PATH"
-elif [[ -d "/home/linuxbrew/.linuxbrew/bin" ]]; then
-  export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-fi
-export PATH="$HOME/go/bin:$PATH"
+#!/bin/sh
+# tools.sh - Lazy tool installation and helpers
+# Sourced by: interactive.sh (interactive shells only)
 
-# Then utilities
-if [[ -n "${BASH_VERSION-}" ]]; then
-  CURSHELL="bash"
-elif [[ -n "${ZSH_VERSION-}" ]]; then
-  CURSHELL="zsh"
-else
-  echo "ERROR: shell not supported." 1>&2
+# Detect shell for tool initialization
+if [ -n "${BASH_VERSION-}" ]; then
+  __shell="bash"
+elif [ -n "${ZSH_VERSION-}" ]; then
+  __shell="zsh"
 fi
+
+# --- Lazy install helper ---
 
 __lazy_install() {
   local cmd="$1"
@@ -22,116 +18,79 @@ __lazy_install() {
   local init_func=""
   local install_cmd=""
 
-  while [[ $# -gt 0 ]]; do
+  while [ $# -gt 0 ]; do
     case $1 in
-      --init=*)
-        init_func="${1#*=}"
-        ;;
-      --termux=*)
-        if [[ -n "$TERMUX_VERSION" ]]; then
-          install_cmd="${1#*=}"
-        fi
-        ;;
+      --init=*) init_func="${1#*=}" ;;
+      --termux=*) [ -n "$TERMUX_VERSION" ] && install_cmd="${1#*=}" ;;
       --linux=*)
-        if [[ "$(uname)" == "Linux" && -z "$TERMUX_VERSION" ]]; then
+        if [ "$(uname)" = "Linux" ] && [ -z "$TERMUX_VERSION" ]; then
           install_cmd="${1#*=}"
         fi
         ;;
-      --macos=*)
-        if [[ "$(uname)" == "Darwin" ]]; then
-          install_cmd="${1#*=}"
-        fi
-        ;;
+      --macos=*) [ "$(uname)" = "Darwin" ] && install_cmd="${1#*=}" ;;
     esac
     shift
   done
 
   if command -v "$cmd" >/dev/null 2>&1; then
-    if [[ -n "$init_func" ]]; then
-      eval "$init_func"
-    fi
+    [ -n "$init_func" ] && eval "$init_func"
     return 0
   fi
 
+  [ -z "$install_cmd" ] && return 1
+
   eval "$cmd() {
-    printf \"Install $cmd? [Y/n]: \"
+    printf 'Install $cmd? [Y/n]: '
     read response
     case \"\$response\" in
       [yY]*|'')
-        if eval \"$install_cmd\"; then
+        if $install_cmd; then
           unset -f $cmd
-          if [[ -n \"$init_func\" ]]; then
-            eval \"$init_func\"
-          fi
+          [ -n \"$init_func\" ] && eval \"$init_func\"
+          $cmd \"\$@\"
         fi
-        ;;
-      *)
-        return 1
         ;;
     esac
   }"
 }
 
-__daily() {
-  : # Skip.
-}
+# --- Daily check helper ---
 
-__touch_daily_file() {
-  daily_file="$HOME/.config/sh/.daily_check"
-  if [[ ! -f "$daily_file" || \
-        $(find "$daily_file" -mtime +1 2>/dev/null) ]]; then
+__daily() { :; }
+
+__setup_daily_check() {
+  local daily_file="$HOME/.config/sh/.daily_check"
+  if [ ! -f "$daily_file" ] || [ -n "$(find "$daily_file" -mtime +1 2>/dev/null)" ]; then
     touch "$daily_file"
-    unset -f __daily
-    __daily() {
-      "$@"
-    }
+    __daily() { "$@"; }
   fi
 }
 
-__touch_daily_file
+__setup_daily_check
 
-# Finally setup tools themselves
+# --- Tool definitions ---
 
-__brew_init() {
-  eval "$(brew shellenv)"
-  export HOMEBREW_AUTO_UPDATE_SECS=2592000
-}
-
-__brew_install() {
-  bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-}
-
-__lazy_install "brew" \
-  --init=__brew_init \
-  --linux=__brew_install \
-  --macos=__brew_install
-
-__yadm_init() {
-  if [[ -n "$(yadm status --porcelain)" ]]; then
+__yadm_check() {
+  if [ -n "$(yadm status --porcelain 2>/dev/null)" ]; then
     echo "yadm: pending local changes."
-  elif ! yadm diff --quiet HEAD origin/main; then
+  elif ! yadm diff --quiet HEAD origin/main 2>/dev/null; then
     echo "yadm: remote changes available."
   else
-    (yadm fetch >/dev/null 2>&1) & disown
+    (yadm fetch >/dev/null 2>&1 &)
   fi
 }
 
 __lazy_install "yadm" \
-  --init="__daily __yadm_init" \
+  --init="__daily __yadm_check" \
   --termux="pkg install yadm" \
   --linux="brew install yadm" \
   --macos="brew install yadm"
 
 __lazy_install "starship" \
-  --init="eval \"\$(starship init $CURSHELL)\"" \
+  --init="eval \"\$(starship init $__shell)\"" \
   --termux="pkg install starship" \
   --linux="brew install starship" \
   --macos="brew install starship"
-
-__lazy_install "mise" \
-  --init="eval \"\$(mise activate $CURSHELL)\"" \
-  --linux="brew install mise" \
-  --macos="brew install mise"
 
 __lazy_install "gh" \
   --termux="pkg install gh" \
@@ -140,19 +99,22 @@ __lazy_install "gh" \
 
 __lazy_install "claude" \
   --termux="npm install -g @anthropic-ai/claude-code" \
-  --linux="brew install --cask claude-code" \
-  --macos="brew install --cask claude-code"
+  --linux="brew install claude" \
+  --macos="brew install claude"
+
+# --- Helpers ---
 
 ai() {
-  flags="-p"
-  if [[ "$1" == "-c" ]]; then
-    flags+=" -c"
+  local flags="-p"
+  if [ "$1" = "-c" ]; then
+    flags="$flags -c"
     shift
   fi
-
   echo "thinking..."
   claude --append-system-prompt \
-"shell assistant. Short answers only. Never run commands or use tools. \
+    "shell assistant. Short answers only. Never run commands or use tools. \
 No markdown. If answer is a command, just print it." \
-  "${flags}" "$*"
+    $flags "$*"
 }
+
+unset __shell

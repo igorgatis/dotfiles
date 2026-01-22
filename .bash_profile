@@ -1,7 +1,4 @@
-# If not running interactively, don't do anything.
-[[ $- != *i* ]] && return
+# ~/.bash_profile - Bash login shell
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  export BASH_SILENCE_DEPRECATION_WARNING=1
-  source ~/.bashrc
-fi
+[ -f ~/.profile ] && . ~/.profile
+[ -f ~/.bashrc ] && . ~/.bashrc

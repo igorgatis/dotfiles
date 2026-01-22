@@ -1,2 +1,4 @@
-# Activate mise for non-interactive shells (e.g., Claude Code).
-command -v mise >/dev/null 2>&1 && eval "$(mise activate zsh)"
+# ~/.zshenv - Sourced for ALL zsh shells (interactive and non-interactive)
+# This ensures tools are available in scripts and Claude Code.
+
+[ -f ~/.profile ] && . ~/.profile
