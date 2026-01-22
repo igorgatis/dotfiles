@@ -22,12 +22,16 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:
 bindkey "^[[A" history-beginning-search-backward
 bindkey "^[[B" history-beginning-search-forward
 bindkey '^[w' kill-region
+bindkey '^A' beginning-of-line
+bindkey '^E' end-of-line
 
-# Word jumping (Ctrl+arrows)
+# Word jumping
 if [[ "$OSTYPE" == linux-gnu* ]] || [[ -n "$TERMUX_VERSION" ]]; then
   bindkey '^[[1;5C' forward-word
   bindkey '^[[1;5D' backward-word
 elif [[ "$OSTYPE" == darwin* ]]; then
   bindkey '^[[1;3D' backward-word
   bindkey '^[[1;3C' forward-word
+  bindkey '^[b' backward-word
+  bindkey '^[f' forward-word
 fi

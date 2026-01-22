@@ -1,2 +1,7 @@
 font-feature = -liga
 font-feature = -calt
+
+cursor-style = block
+shell-integration-features = no-cursor
+
+quit-after-last-window-closed = true

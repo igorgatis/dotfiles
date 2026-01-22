@@ -1,7 +1,6 @@
 - Avoid adding code comments.
-- When writing unittests, prefer more coarse grained tests. Always inclue a "happy path" case.
+- When writing unittests, prefer more coarse grained tests. Always include a "happy path" case.
 - Remove trailing whitespaces unless told otherwise.
-- Keep code under 100 cols.
+- Keep code under 120 cols.
 - Avoid emojis
-- When starting background tasks, print the log file path in case there is one.
 - NEVER store passwords, secrets, or API keys in version-controlled files. No exceptions.
