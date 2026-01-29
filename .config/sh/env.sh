@@ -6,12 +6,15 @@
 [ -n "$__ENV_SOURCED" ] && return
 export __ENV_SOURCED=1
 
-# Locale
-export LC_ALL=C
-if locale -a 2>/dev/null | grep -q en_US.UTF-8; then
-  export LC_ALL=en_US.UTF-8
-fi
-export LANG=$LC_ALL
+# Locale (UTF-8 needed for proper terminal rendering)
+for __locale in en_US.UTF-8 en_US.utf8 C.UTF-8 C.utf8; do
+  if locale -a 2>/dev/null | grep -qx "$__locale"; then
+    export LANG="$__locale"
+    export LC_ALL="$__locale"
+    break
+  fi
+done
+unset __locale
 
 export EDITOR='vim'
 
