@@ -28,7 +28,7 @@ format = "[( \\[$branch\\])]($style)"
 style = "bright-yellow bold"
 
 [git_status]
-format = "([\\[$all_status$ahead_behind\\]]($style))"
+format = "([\\[$all_status\\]]($style))"
 
 [env_var.VIRTUAL_ENV]
 format = "[venv ]($style)"

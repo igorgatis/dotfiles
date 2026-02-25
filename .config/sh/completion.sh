@@ -5,8 +5,12 @@ if [[ -n "${BASH_VERSION-}" ]]; then
     source /etc/bash_completion
   fi
   source "$HOME/.config/sh/git-completion.bash"
-  # Make target completion.
-  complete -W "\`grep -oE '^[a-zA-Z0-9_.-]+:([^=]|$)' ?akefile | sed 's/[^a-zA-Z0-9_.-]*$//'\`" make
+  _make_completions() {
+    local targets
+    targets=$(grep -oE '^[a-zA-Z0-9_.-]+:([^=]|$)' ?akefile 2>/dev/null | sed 's/[^a-zA-Z0-9_.-]*$//')
+    COMPREPLY=($(compgen -W "$targets" -- "${COMP_WORDS[COMP_CWORD]}"))
+  }
+  complete -F _make_completions make
 
   # Hack to make 'git dd' complete to branch names.
   _git_dd() { _git_diff ; }
