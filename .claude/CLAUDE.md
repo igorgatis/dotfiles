@@ -4,3 +4,5 @@
 - Keep code under 120 cols.
 - Avoid emojis
 - NEVER store passwords, secrets, or API keys in version-controlled files. No exceptions.
+- When making parallel tool calls, prefer grouping already-permitted calls separately from ones needing approval so permitted ones aren't blocked.
+- Store environment/machine-specific notes in memory; put cross-cutting concerns in CLAUDE.md or repo files.
