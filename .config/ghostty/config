@@ -4,4 +4,6 @@ font-feature = -calt
 cursor-style = block
 shell-integration-features = no-cursor
 
+desktop-notifications = true
+
 quit-after-last-window-closed = true

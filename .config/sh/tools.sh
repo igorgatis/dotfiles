@@ -102,6 +102,12 @@ __lazy_install "claude" \
   --linux="brew install claude" \
   --macos="brew install claude"
 
+# --- Environment ---
+
+if [ -n "$TERMUX_VERSION" ]; then
+  export BROWSER=termux-open-url
+fi
+
 # --- Helpers ---
 
 ai() {
