@@ -43,3 +43,6 @@ __prepend_path "$HOME/go/bin"
 __prepend_path "$HOME/.local/share/mise/shims"
 
 unset -f __prepend_path
+
+# tsgo: use local binary on Termux (npm package lacks android-arm64 support)
+[ -n "${TERMUX_VERSION:-}" ] && export TSGO_BIN="$HOME/.local/bin/tsgo"

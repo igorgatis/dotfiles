@@ -5,3 +5,4 @@
 . "$HOME/.config/sh/interactive.sh"
 
 [[ -f ~/.bashrc_local ]] && . ~/.bashrc_local
+. "$HOME/.cargo/env"
