@@ -1,0 +1,16 @@
+{
+  "voiceEnabled": true,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/bash-pretooluse.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
