@@ -1,21 +1,16 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "voiceEnabled": true,
   "permissions": {
     "allow": [
-      "Bash(yadm:*)"
-    ]
-  },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/bash-pretooluse.sh"
-          }
-        ]
-      }
-    ]
+      "Bash(yadm:*)",
+      "Bash(pushd:*)",
+      "Bash(pwd:*)",
+      "Read",
+      "Grep",
+      "Glob",
+      "WebFetch(domain:google.com)"
+    ],
+    "deny": []
   }
 }
