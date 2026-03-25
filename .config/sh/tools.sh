@@ -99,8 +99,8 @@ __lazy_install "gh" \
 
 __lazy_install "claude" \
   --termux="npm install -g @anthropic-ai/claude-code" \
-  --linux="brew install claude" \
-  --macos="brew install claude"
+  --linux="curl -fsSL https://claude.ai/install.sh | sh" \
+  --macos="curl -fsSL https://claude.ai/install.sh | sh"
 
 # --- Environment ---
 
