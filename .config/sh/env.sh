@@ -44,8 +44,11 @@ __prepend_path "$HOME/.local/share/mise/shims"
 
 unset -f __prepend_path
 
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+
 # tsgo: use local binary on Termux (npm package lacks android-arm64 support)
 if [ -n "${TERMUX_VERSION:-}" ]; then
   export TSGO_BIN="$HOME/.local/bin/tsgo"
   export EAS_SKIP_AUTO_FINGERPRINT=1
+  export BROWSER=termux-open-url
 fi

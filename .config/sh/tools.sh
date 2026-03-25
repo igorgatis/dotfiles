@@ -102,12 +102,6 @@ __lazy_install "claude" \
   --linux="curl -fsSL https://claude.ai/install.sh | sh" \
   --macos="curl -fsSL https://claude.ai/install.sh | sh"
 
-# --- Environment ---
-
-if [ -n "$TERMUX_VERSION" ]; then
-  export BROWSER=termux-open-url
-fi
-
 # --- Helpers ---
 
 ai() {

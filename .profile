@@ -5,4 +5,3 @@
 
 # Enable env.sh for non-interactive bash (scripts, Claude Code)
 export BASH_ENV="$HOME/.config/sh/env.sh"
-. "$HOME/.cargo/env"

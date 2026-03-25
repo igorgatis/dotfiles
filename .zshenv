@@ -2,4 +2,3 @@
 # This ensures tools are available in scripts and Claude Code.
 
 [ -f ~/.profile ] && . ~/.profile
-. "$HOME/.cargo/env"
