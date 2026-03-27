@@ -3,12 +3,17 @@
   "voiceEnabled": true,
   "permissions": {
     "allow": [
-      "Bash(yadm:*)",
+      "Glob",
+      "Grep",
+      "Read",
       "Bash(pushd:*)",
       "Bash(pwd:*)",
-      "Read",
-      "Grep",
-      "Glob",
+      "Bash(awk:*)",
+      "Bash(cat:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(yadm:*)",
       "WebFetch(domain:google.com)"
     ],
     "deny": []
