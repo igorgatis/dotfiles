@@ -1,6 +1,6 @@
 ---
 name: dotfiles
-description: Manage yadm-tracked dotfiles. Add/remove tools, aliases, env vars. Cross-platform (macOS, Linux, Termux). Suggest tools and organization improvements.
+description: "Manage yadm-tracked dotfiles. Add/remove tools, aliases, env vars. Cross-platform (macOS, Linux, Termux). Suggest tools and organization improvements. TRIGGER when: user asks to add/change/remove a shell alias, env var, PATH entry, shell tool, CLI default flags, prompt config, bashrc/zshrc change, or any modification to dotfiles (files starting with .) or shell startup files (~/.config/sh/*, ~/.bashrc, ~/.zshrc, ~/.gitconfig, ~/.vimrc, ~/.tmux.conf). DO NOT edit these files without loading this skill first."
 user-invocable: true
 argument-hint: [action] [details...]
 allowed-tools: Read Edit Write Grep Glob Bash(sh ${CLAUDE_SKILL_DIR}/dotfiles-helper.sh *) Bash(yadm *) Bash(bash *) Bash(zsh *)

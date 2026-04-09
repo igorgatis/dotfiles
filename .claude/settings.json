@@ -1,6 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "voiceEnabled": true,
   "permissions": {
     "allow": [
       "Glob",
@@ -17,5 +16,9 @@
       "WebFetch(domain:google.com)"
     ],
     "deny": []
+  },
+  "voiceEnabled": true,
+  "enabledPlugins": {
+    "code-review@claude-plugins-official": true
   }
 }
