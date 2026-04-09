@@ -13,7 +13,9 @@
       "Bash(grep:*)",
       "Bash(rg:*)",
       "Bash(yadm:*)",
-      "WebFetch(domain:google.com)"
+      "WebFetch(domain:google.com)",
+      "Bash(~/.claude/skills/tools-inventory/discover.sh:*)",
+      "Bash(~/.claude/skills/dotfiles/dotfiles-helper.sh:*)"
     ],
     "deny": []
   },
