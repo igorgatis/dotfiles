@@ -21,8 +21,8 @@ fi
 . "$HOME/.config/sh/completion.sh"
 . "$HOME/.config/sh/tools.sh"
 . "$HOME/.config/sh/prompt.sh"
-. "$HOME/.config/sh/command-not-found.sh"
-
 export CLICOLOR=1
+
+. "$HOME/.config/sh/command-not-found.sh"
 
 unset __shell
