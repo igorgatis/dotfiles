@@ -23,6 +23,4 @@ fi
 . "$HOME/.config/sh/prompt.sh"
 export CLICOLOR=1
 
-. "$HOME/.config/sh/command-not-found.sh"
-
 unset __shell
