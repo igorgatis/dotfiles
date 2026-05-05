@@ -6,6 +6,6 @@
 
 . "$HOME/.config/sh/interactive.sh"
 
-[[ -f ~/.zshrc_local ]] && . ~/.zshrc_local
+[[ ! -f ~/.zshrc_local ]] || . ~/.zshrc_local
 
-[[ -n "${ENABLE_ZPROF-}" ]] && zprof
+[[ -z "${ENABLE_ZPROF-}" ]] || zprof
