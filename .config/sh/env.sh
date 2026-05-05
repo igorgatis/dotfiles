@@ -38,6 +38,7 @@ fi
 
 __prepend_path "$HOME/.local/bin"
 __prepend_path "$HOME/go/bin"
+__prepend_path "$HOME/.pulumi/bin"
 
 # mise shims for non-interactive shells
 __prepend_path "$HOME/.local/share/mise/shims"
