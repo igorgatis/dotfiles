@@ -26,7 +26,7 @@ bindkey '^A' beginning-of-line
 bindkey '^E' end-of-line
 
 # Word jumping
-if [[ "$OSTYPE" == linux-gnu* ]] || [[ -n "$TERMUX_VERSION" ]]; then
+if [[ "$OSTYPE" == linux-gnu* ]] || [[ -n "$__ON_TERMUX" ]]; then
   bindkey '^[[1;5C' forward-word
   bindkey '^[[1;5D' backward-word
 elif [[ "$OSTYPE" == darwin* ]]; then

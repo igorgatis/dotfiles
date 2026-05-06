@@ -9,6 +9,6 @@ alias ls='ls -h --color=auto'
 alias rg='rg --no-heading -N'
 alias vi='vim'
 
-if [ -n "$TERMUX_VERSION" ] && command -v proot-distro >/dev/null 2>&1; then
+if [ -n "$__ON_TERMUX" ] && command -v proot-distro >/dev/null 2>&1; then
   alias debian='proot-distro login debian --user igorgatis'
 fi

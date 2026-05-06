@@ -21,9 +21,9 @@ __lazy_install() {
   while [ $# -gt 0 ]; do
     case $1 in
       --init=*) init_func="${1#*=}" ;;
-      --termux=*) [ -n "$TERMUX_VERSION" ] && install_cmd="${1#*=}" ;;
+      --termux=*) [ -n "$__ON_TERMUX" ] && install_cmd="${1#*=}" ;;
       --linux=*)
-        if [ "$(uname)" = "Linux" ] && [ -z "$TERMUX_VERSION" ]; then
+        if [ "$(uname)" = "Linux" ] && [ -z "$__ON_TERMUX" ]; then
           install_cmd="${1#*=}"
         fi
         ;;

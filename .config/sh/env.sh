@@ -47,9 +47,13 @@ unset -f __prepend_path
 
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
-# tsgo: use local binary on Termux (npm package lacks android-arm64 support)
-if [ -n "${TERMUX_VERSION:-}" ]; then
-  export TSGO_BIN="$HOME/.local/bin/tsgo"
-  export EAS_SKIP_AUTO_FINGERPRINT=1
+# Termux host (also matches proot-distro: termux-tools bind-mounted at this path).
+if [ -x /data/data/com.termux/files/usr/bin/termux-info ]; then
+  export __ON_TERMUX=1
+fi
+
+if [ -n "$__ON_TERMUX" ]; then
   export BROWSER=termux-open-url
+  export EAS_SKIP_AUTO_FINGERPRINT=1
+  export TSGO_BIN="$HOME/.local/bin/tsgo"  # npm pkg lacks android-arm64
 fi
