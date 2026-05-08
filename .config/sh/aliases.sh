@@ -10,5 +10,11 @@ alias rg='rg --no-heading -N'
 alias vi='vim'
 
 if [ -n "$__ON_TERMUX" ] && command -v proot-distro >/dev/null 2>&1; then
-  alias debian='proot-distro login debian --user igorgatis'
+  debian() {
+    if [ "$#" -eq 0 ]; then
+      proot-distro login debian --user igorgatis
+    else
+      proot-distro login debian --user igorgatis -- bash -lc "$*"
+    fi
+  }
 fi
