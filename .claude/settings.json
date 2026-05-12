@@ -215,6 +215,7 @@
     "code-review@claude-plugins-official": true
   },
   "theme": "dark",
+  "tui": "fullscreen",
   "voiceEnabled": true,
   "skipAutoPermissionPrompt": true
 }
