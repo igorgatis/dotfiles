@@ -14,7 +14,7 @@ bind '"\e[B": history-search-forward'
 bind 'set completion-ignore-case on'
 
 # Word jumping (Ctrl+arrows)
-if [[ "$OSTYPE" == linux-gnu* ]] || [[ -n "$__ON_TERMUX" ]]; then
+if [[ "$OSTYPE" == linux-gnu* ]]; then
   bind '"\e[1;5C": forward-word'
   bind '"\e[1;5D": backward-word'
 elif [[ "$OSTYPE" == darwin* ]]; then

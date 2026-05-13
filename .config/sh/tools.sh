@@ -21,9 +21,8 @@ __lazy_install() {
   while [ $# -gt 0 ]; do
     case $1 in
       --init=*) init_func="${1#*=}" ;;
-      --termux=*) [ -n "$__ON_TERMUX" ] && install_cmd="${1#*=}" ;;
       --linux=*)
-        if [ "$(uname)" = "Linux" ] && [ -z "$__ON_TERMUX" ]; then
+        if [ "$(uname)" = "Linux" ]; then
           install_cmd="${1#*=}"
         fi
         ;;
@@ -82,23 +81,19 @@ __yadm_check() {
 
 __lazy_install "yadm" \
   --init="__daily __yadm_check" \
-  --termux="pkg install yadm" \
   --linux="brew install yadm" \
   --macos="brew install yadm"
 
 __lazy_install "starship" \
-  --init="eval \"\$(starship init $__shell)\"" \
-  --termux="pkg install starship" \
+  --init="starship --version >/dev/null 2>&1 && hash -r 2>/dev/null && eval \"\$(starship init $__shell)\"" \
   --linux="brew install starship" \
   --macos="brew install starship"
 
 __lazy_install "gh" \
-  --termux="pkg install gh" \
   --linux="brew install gh" \
   --macos="brew install gh"
 
 __lazy_install "claude" \
-  --termux="npm install -g @anthropic-ai/claude-code" \
   --linux="curl -fsSL https://claude.ai/install.sh | sh" \
   --macos="curl -fsSL https://claude.ai/install.sh | sh"
 

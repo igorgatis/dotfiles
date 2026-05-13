@@ -18,6 +18,7 @@ fi
 
 # Common settings
 . "$HOME/.config/sh/aliases.sh"
+. "$HOME/.config/sh/termux.sh"
 . "$HOME/.config/sh/completion.sh"
 . "$HOME/.config/sh/tools.sh"
 . "$HOME/.config/sh/prompt.sh"

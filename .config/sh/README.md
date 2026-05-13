@@ -1,6 +1,7 @@
 # Shell Configuration
 
-Managed with [yadm](https://yadm.io). Supports bash and zsh on Linux, macOS, and Termux.
+Managed with [yadm](https://yadm.io). Supports bash and zsh on Linux and macOS.
+Termux-host-only tweaks (proot launcher, etc.) live in `termux.sh` as a no-op-elsewhere bucket.
 
 ## Structure
 
@@ -15,6 +16,7 @@ Managed with [yadm](https://yadm.io). Supports bash and zsh on Linux, macOS, and
   env.sh                # Environment: PATH, locale, brew, mise shims
   interactive.sh        # Interactive entry point, sources shell-specific + common
   aliases.sh            # Shell-agnostic aliases
+  termux.sh             # Termux-host-only tweaks (skipped elsewhere)
   prompt.sh             # Prompt setup (starship or fallback)
   completion.sh         # Tab completion
   tools.sh              # Lazy tool installation helpers
@@ -66,7 +68,8 @@ Managed with [yadm](https://yadm.io). Supports bash and zsh on Linux, macOS, and
 
 - **macOS**: Brew at `/opt/homebrew` (ARM) or `/usr/local` (Intel)
 - **Linux**: Brew at `/home/linuxbrew/.linuxbrew` or `~/.linuxbrew`
-- **Termux**: Uses zsh by default. No brew, uses `pkg` instead.
+- **Termux host**: not a primary target. `termux.sh` is gated on `$TERMUX_VERSION`
+  and contains the `debian()` proot-distro launcher; add other host-only bits there.
 
 ## Adding New Tools
 
@@ -75,7 +78,6 @@ Use the `__lazy_install` function in `tools.sh`:
 ```bash
 __lazy_install "toolname" \
   --init="initialization command" \
-  --termux="pkg install toolname" \
   --linux="brew install toolname" \
   --macos="brew install toolname"
 ```
