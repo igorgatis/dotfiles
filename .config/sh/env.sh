@@ -47,4 +47,6 @@ unset -f __prepend_path
 
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
-command -v termux-open-url >/dev/null 2>&1 && export BROWSER=termux-open-url
+if command -v termux-open-url >/dev/null 2>&1; then
+  export BROWSER=termux-open-url
+fi
