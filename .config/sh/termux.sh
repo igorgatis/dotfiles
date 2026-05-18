@@ -6,9 +6,10 @@
 if command -v proot-distro >/dev/null 2>&1; then
   debian() {
     if [ "$#" -eq 0 ]; then
-      proot-distro login debian --isolated --user igorgatis
+      proot-distro login debian --isolated --user igorgatis --bind "$PREFIX:$PREFIX"
     else
-      proot-distro login debian --isolated --user igorgatis -- bash -lc "$*"
+      proot-distro login debian --isolated --user igorgatis --bind "$PREFIX:$PREFIX" \
+        -- bash -lc "$*"
     fi
   }
 fi
