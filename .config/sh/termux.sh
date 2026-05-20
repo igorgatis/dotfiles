@@ -16,7 +16,7 @@ if command -v proot-distro >/dev/null 2>&1; then
       proot-distro login debian --isolated --user igorgatis --bind "$PREFIX:$PREFIX"
     else
       proot-distro login debian --isolated --user igorgatis --bind "$PREFIX:$PREFIX" \
-        -- bash -lc "$*"
+        -- env -u __ENV_SOURCED bash -lc "$*"
     fi
   }
 fi
