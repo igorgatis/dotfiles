@@ -49,7 +49,7 @@ unset -f __prepend_path
 
 if [ -n "${TERMUX_VERSION:-}" ]; then
   eval "__termux_open_url() {
-    '$PREFIX/am' start --user '$TERMUX__USER_ID' -a android.intent.action.VIEW -d \"\$@\" > /dev/null
+    '$PREFIX/bin/am' start --user '$TERMUX__USER_ID' -a android.intent.action.VIEW -d \"\$@\" > /dev/null
   }"
   export BROWSER=__termux_open_url
 fi
