@@ -14,6 +14,8 @@ if command -v proot-distro >/dev/null 2>&1; then
     unset __debian_rootfs
     __debian_binds="--bind $PREFIX:$PREFIX --bind /system --bind /apex"
     [ -d /linkerconfig ] && __debian_binds="$__debian_binds --bind /linkerconfig"
+    [ -r /linkerconfig/com.android.art/ld.config.txt ] && __debian_binds="$__debian_binds \
+      --bind /linkerconfig/com.android.art/ld.config.txt:/linkerconfig/ld.config.txt"
     __debian_env="env -u __ENV_SOURCED PREFIX=$PREFIX TERMUX__USER_ID=$TERMUX__USER_ID"
     if [ "$#" -eq 0 ]; then
       proot-distro login debian --isolated --user igorgatis $__debian_binds \
