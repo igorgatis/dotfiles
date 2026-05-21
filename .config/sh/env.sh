@@ -47,7 +47,7 @@ unset -f __prepend_path
 
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
-if [ -x "$PREFIX/bin/am" ]; then
+if [ -n "${TERMUX_VERSION:-}" ]; then
   eval "__termux_open_url() {
     '$PREFIX/bin/am' start --user '$TERMUX__USER_ID' -a android.intent.action.VIEW -d \"\$@\" > /dev/null
   }"
