@@ -14,12 +14,15 @@ if command -v proot-distro >/dev/null 2>&1; then
     unset __debian_rootfs
     __debian_binds="--bind $PREFIX:$PREFIX --bind /system --bind /apex"
     [ -d /linkerconfig ] && __debian_binds="$__debian_binds --bind /linkerconfig"
+    __debian_env="env -u __ENV_SOURCED PREFIX=$PREFIX TERMUX__USER_ID=$TERMUX__USER_ID"
     if [ "$#" -eq 0 ]; then
-      proot-distro login debian --isolated --user igorgatis $__debian_binds
+      proot-distro login debian --isolated --user igorgatis $__debian_binds \
+        -- $__debian_env bash -l
     else
       proot-distro login debian --isolated --user igorgatis $__debian_binds \
-        -- env -u __ENV_SOURCED bash -lc "$*"
+        -- $__debian_env bash -lc "$*"
     fi
+    unset __debian_env
     unset __debian_binds
   }
 fi
