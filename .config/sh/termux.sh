@@ -13,8 +13,7 @@ if command -v proot-distro >/dev/null 2>&1; then
     fi
     unset __debian_rootfs
     __debian_binds="--bind $PREFIX:$PREFIX --bind /system --bind /apex"
-    [ -f /linkerconfig/com.android.art/ld.config.txt ] && \
-      __debian_binds="$__debian_binds --bind /linkerconfig/com.android.art/ld.config.txt"
+    [ -d /linkerconfig ] && __debian_binds="$__debian_binds --bind /linkerconfig"
     if [ "$#" -eq 0 ]; then
       proot-distro login debian --isolated --user igorgatis $__debian_binds
     else

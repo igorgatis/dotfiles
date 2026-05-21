@@ -47,6 +47,9 @@ unset -f __prepend_path
 
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
-if command -v termux-open-url >/dev/null 2>&1; then
-  export BROWSER=termux-open-url
+if [ -n "${TERMUX_VERSION:-}" ]; then
+  eval "__termux_open_url() {
+    '$PREFIX/am' start --user '$TERMUX__USER_ID' -a android.intent.action.VIEW -d \"\$@\" > /dev/null
+  }"
+  export BROWSER=__termux_open_url
 fi
