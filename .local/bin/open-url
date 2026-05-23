@@ -1,0 +1,16 @@
+#!/bin/sh
+# open-url - environment-aware URL opener.
+#
+# Inside a proot guest with the host's URL bridge bound: writes to /url-bridge.
+# On native Termux: invokes termux-open-url.
+# Elsewhere: error out.
+
+if [ -p /url-bridge ]; then
+  [ "$#" -gt 0 ] || exit 0
+  for u in "$@"; do printf '%s\n' "$u"; done > /url-bridge
+elif command -v termux-open-url >/dev/null 2>&1; then
+  exec termux-open-url "$@"
+else
+  echo "open-url: no URL handler available in this environment" >&2
+  exit 1
+fi

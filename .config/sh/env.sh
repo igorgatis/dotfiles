@@ -51,3 +51,10 @@ __prepend_path "$HOME/.local/share/mise/shims"
 unset -f __prepend_path
 
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+
+# $BROWSER routes to ~/.local/bin/open-url where it'll actually work:
+# native Termux (via termux-open-url), or a proot guest with /url-bridge.
+if { [ -p /url-bridge ] || [ -n "${TERMUX_VERSION:-}" ]; } \
+   && command -v open-url >/dev/null 2>&1; then
+  export BROWSER=open-url
+fi

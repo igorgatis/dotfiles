@@ -1,14 +1,10 @@
 #!/bin/sh
 # termux.sh - Termux host-only tweaks (no-op elsewhere, including proot guests).
-# Sourced from env.sh so BROWSER reaches non-interactive shells too.
+# Sourced from env.sh so functions reach non-interactive shells too.
+# BROWSER is set in env.sh by routing to ~/.local/bin/open-url, which
+# handles both native Termux and proot-guest-with-bridge cases.
 
 [ -n "${TERMUX_VERSION-}" ] || return 0
-
-# $BROWSER hook for tools that respect it (man, links, etc.).
-eval "__termux_open_url() {
-  '$PREFIX/bin/am' start --user '$TERMUX__USER_ID' -a android.intent.action.VIEW -d \"\$@\" > /dev/null
-}"
-export BROWSER=__termux_open_url
 
 # Per-session URL bridge: a FIFO that opens URLs via termux-open-url when
 # written to. Use $URL_BRIDGE_PIPE as a --bind source for guests that
