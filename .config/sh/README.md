@@ -16,7 +16,7 @@ Termux-host-only tweaks (proot launcher, etc.) live in `termux.sh` as a no-op-el
   env.sh                # Environment: PATH, locale, brew, mise shims
   interactive.sh        # Interactive entry point, sources shell-specific + common
   aliases.sh            # Shell-agnostic aliases
-  termux.sh             # Termux-host-only tweaks (skipped elsewhere)
+  termux.sh             # Termux-host-only tweaks: BROWSER, URL bridge, debian launcher (skipped elsewhere)
   prompt.sh             # Prompt setup (starship or fallback)
   completion.sh         # Tab completion
   tools.sh              # Lazy tool installation helpers

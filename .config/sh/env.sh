@@ -3,6 +3,11 @@
 # Sourced by: .profile, .zshenv, BASH_ENV
 # Keep minimal and fast.
 
+# termux.sh defines functions (debian, url_bridge_*) that don't propagate
+# across exec, so it must run in every child shell — before the guard.
+# Its TERMUX_VERSION gate makes it a fast no-op on other platforms.
+[ -f "$HOME/.config/sh/termux.sh" ] && . "$HOME/.config/sh/termux.sh"
+
 [ -n "$__ENV_SOURCED" ] && return
 export __ENV_SOURCED=1
 
@@ -46,10 +51,3 @@ __prepend_path "$HOME/.local/share/mise/shims"
 unset -f __prepend_path
 
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
-
-if [ -n "${TERMUX_VERSION:-}" ]; then
-  eval "__termux_open_url() {
-    '$PREFIX/bin/am' start --user '$TERMUX__USER_ID' -a android.intent.action.VIEW -d \"\$@\" > /dev/null
-  }"
-  export BROWSER=__termux_open_url
-fi
