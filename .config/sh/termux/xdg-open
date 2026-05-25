@@ -1,0 +1,21 @@
+#!/bin/sh
+# xdg-open - URL opener client for the xdg-open-server daemon.
+#
+# Named xdg-open so Python's webbrowser module (used by gcloud auth, etc.)
+# detects it as a BackgroundBrowser rather than rejecting it as GenericBrowser.
+#
+# Inside a proot guest with the host's FIFO bound at /tmp/xdg-open.fifo:
+# writes URLs there for xdg-open-server (on the Termux host) to dispatch.
+# On native Termux: invokes termux-open-url directly.
+
+FIFO="${XDG_OPEN_FIFO:-/tmp/xdg-open.fifo}"
+
+if [ -p "$FIFO" ]; then
+  [ "$#" -gt 0 ] || exit 0
+  for u in "$@"; do printf '%s\n' "$u"; done > "$FIFO"
+elif command -v termux-open-url >/dev/null 2>&1; then
+  exec termux-open-url "$@"
+else
+  echo "xdg-open: no URL handler available in this environment" >&2
+  exit 1
+fi

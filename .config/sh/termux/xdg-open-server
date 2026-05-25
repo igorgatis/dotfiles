@@ -1,0 +1,127 @@
+#!/bin/sh
+# xdg-open-server - single-instance URL opener daemon for Termux.
+#
+# Reads URLs (one per line) from a FIFO and opens each via termux-open-url.
+# Bind-mount the FIFO into a proot guest at /tmp/xdg-open.fifo so the guest's
+# xdg-open client can hand URLs back to the Termux host browser.
+#
+# Usage:
+#   xdg-open-server start     ensure running, print FIFO path
+#   xdg-open-server stop      kill and clean up
+#   xdg-open-server status    exit 0 if running
+#   xdg-open-server fifo      print FIFO path with no side effects
+
+set -eu
+
+if [ -n "${PREFIX:-}" ]; then
+  __default_dir="$PREFIX/tmp"
+else
+  __default_dir=/tmp
+fi
+XDG_OPEN_FIFO="${XDG_OPEN_FIFO:-$__default_dir/xdg-open.fifo}"
+XDG_OPEN_PIDFILE="${XDG_OPEN_PIDFILE:-$__default_dir/xdg-open.pid}"
+unset __default_dir
+
+server_running() {
+  [ -f "$XDG_OPEN_PIDFILE" ] || return 1
+  __pid=$(cat "$XDG_OPEN_PIDFILE" 2>/dev/null) || return 1
+  [ -n "$__pid" ] || return 1
+  kill -0 "$__pid" 2>/dev/null || return 1
+  # Defend against PID reuse after device reboot / OOM kill: verify the
+  # process's cmdline actually mentions this script.
+  if [ -r "/proc/$__pid/cmdline" ]; then
+    case "$(tr '\0' ' ' < "/proc/$__pid/cmdline" 2>/dev/null)" in
+      *xdg-open-server*) return 0 ;;
+      *) return 1 ;;
+    esac
+  fi
+  return 0
+}
+
+run_loop() {
+  echo $$ > "$XDG_OPEN_PIDFILE"
+  trap 'rm -f "$XDG_OPEN_FIFO" "$XDG_OPEN_PIDFILE"' INT TERM HUP EXIT
+  exec <>"$XDG_OPEN_FIFO"
+  __last=""
+  __last_ts=0
+  while IFS= read -r url; do
+    [ -z "$url" ] && continue
+    __now=$(date +%s)
+    __diff=$((__now - __last_ts))
+    [ "$__diff" -lt 0 ] && __diff=2
+    if [ "$url" = "$__last" ] && [ "$__diff" -lt 2 ]; then
+      continue
+    fi
+    __last="$url"
+    __last_ts=$__now
+    termux-open-url "$url" || true
+  done
+}
+
+__short_sleep() {
+  sleep 0.1 2>/dev/null || sleep 1
+}
+
+do_start() {
+  if server_running; then
+    echo "$XDG_OPEN_FIFO"
+    return 0
+  fi
+  command -v termux-open-url >/dev/null 2>&1 || {
+    echo "xdg-open-server: termux-open-url not installed" >&2
+    return 1
+  }
+  rm -f "$XDG_OPEN_FIFO" "$XDG_OPEN_PIDFILE"
+  mkdir -p "$(dirname "$XDG_OPEN_FIFO")" "$(dirname "$XDG_OPEN_PIDFILE")"
+  mkfifo "$XDG_OPEN_FIFO"
+  XDG_OPEN_INTERNAL=1 setsid "$0" __daemon </dev/null >/dev/null 2>&1 &
+  __i=0
+  while [ "$__i" -lt 30 ]; do
+    server_running && { echo "$XDG_OPEN_FIFO"; return 0; }
+    __short_sleep
+    __i=$((__i + 1))
+  done
+  echo "xdg-open-server: daemon failed to register pidfile" >&2
+  rm -f "$XDG_OPEN_FIFO"
+  return 1
+}
+
+do_stop() {
+  if [ -f "$XDG_OPEN_PIDFILE" ]; then
+    __pid=$(cat "$XDG_OPEN_PIDFILE" 2>/dev/null) || __pid=""
+    if [ -n "$__pid" ]; then
+      kill "$__pid" 2>/dev/null || true
+      __i=0
+      while [ "$__i" -lt 30 ] && kill -0 "$__pid" 2>/dev/null; do
+        __short_sleep
+        __i=$((__i + 1))
+      done
+    fi
+  fi
+  rm -f "$XDG_OPEN_FIFO" "$XDG_OPEN_PIDFILE"
+}
+
+do_status() {
+  if server_running; then
+    echo "running pid=$(cat "$XDG_OPEN_PIDFILE") fifo=$XDG_OPEN_FIFO"
+    return 0
+  fi
+  echo "not running"
+  return 1
+}
+
+case "${1:-status}" in
+  start) do_start ;;
+  stop) do_stop ;;
+  restart) do_stop; do_start ;;
+  status) do_status ;;
+  fifo) echo "$XDG_OPEN_FIFO" ;;
+  __daemon)
+    [ "${XDG_OPEN_INTERNAL:-}" = "1" ] || {
+      echo "xdg-open-server: __daemon is for internal use only" >&2
+      exit 2
+    }
+    run_loop
+    ;;
+  *) echo "usage: $0 {start|stop|restart|status|fifo}" >&2; exit 2 ;;
+esac

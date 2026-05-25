@@ -3,12 +3,30 @@
 # Sourced by: .profile, .zshenv, BASH_ENV
 # Keep minimal and fast.
 
-# termux.sh defines functions (debian, url_bridge_*) that don't propagate
-# across exec, so it must run in every child shell — before the guard.
-# Its TERMUX_VERSION gate makes it a fast no-op on other platforms.
+# termux.sh defines the debian() function which doesn't propagate across exec,
+# so it must run in every child shell — before the guard. Its TERMUX_VERSION
+# gate makes it a fast no-op on other platforms.
 [ -f "$HOME/.config/sh/termux.sh" ] && . "$HOME/.config/sh/termux.sh"
 
-[ -n "$__ENV_SOURCED" ] && return
+# Bridge: PATH + BROWSER + DISPLAY for the xdg-open shim. Runs before the
+# guard because non-interactive child shells may have had PATH scrubbed
+# (proot --isolated, env -i, BASH_ENV re-entry) while still inheriting
+# __ENV_SOURCED. The xdg-open name is what Python's webbrowser module looks
+# for; gcloud rejects GenericBrowser but accepts xdg-open as BackgroundBrowser.
+# DISPLAY=:0 is required for webbrowser to even register xdg-open — accepted
+# tradeoff: it leaks to X11-aware tools in the same shell.
+if [ -p /tmp/xdg-open.fifo ] || [ -n "${TERMUX_VERSION:-}" ]; then
+  case ":$PATH:" in
+    *":$HOME/.config/sh/termux:"*) ;;
+    *) export PATH="$HOME/.config/sh/termux:$PATH" ;;
+  esac
+  if command -v xdg-open >/dev/null 2>&1; then
+    export BROWSER=xdg-open
+    [ -z "${DISPLAY:-}" ] && export DISPLAY=:0
+  fi
+fi
+
+[ -n "${__ENV_SOURCED:-}" ] && return
 export __ENV_SOURCED=1
 
 # Locale (UTF-8 needed for proper terminal rendering)
@@ -52,9 +70,3 @@ unset -f __prepend_path
 
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
-# $BROWSER routes to ~/.local/bin/open-url where it'll actually work:
-# native Termux (via termux-open-url), or a proot guest with /url-bridge.
-if { [ -p /url-bridge ] || [ -n "${TERMUX_VERSION:-}" ]; } \
-   && command -v open-url >/dev/null 2>&1; then
-  export BROWSER=open-url
-fi
