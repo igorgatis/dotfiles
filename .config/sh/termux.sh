@@ -16,7 +16,7 @@ if command -v proot-distro >/dev/null 2>&1; then
     fi
     unset __debian_rootfs
 
-    __debian_bind="--bind $HOME"
+    __debian_bind="--bind $HOME:$HOME"
     if command -v xdg-open-server >/dev/null 2>&1; then
       __fifo=$(xdg-open-server start 2>/dev/null) || __fifo=""
       [ -n "$__fifo" ] && __debian_bind="$__debian_bind --bind $__fifo:/tmp/xdg-open.fifo"
