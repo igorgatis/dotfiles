@@ -22,16 +22,16 @@ TAU="τ"
 # the display name with any "(... context)" parenthetical stripped.
 model_short() {
   case "$1" in
-    claude-opus-4-8*)                         echo "Opus 4.8" ;;
-    claude-opus-4-7*)                         echo "Opus 4.7" ;;
-    claude-opus-4-6*)                         echo "Opus 4.6" ;;
-    claude-opus-4-5*)                         echo "Opus 4.5" ;;
-    claude-opus-4-1*)                         echo "Opus 4.1" ;;
-    claude-opus-4-0*|claude-opus-4-2025*)     echo "Opus 4" ;;
-    claude-sonnet-4-6*)                       echo "Sonnet 4.6" ;;
-    claude-sonnet-4-5*)                       echo "Sonnet 4.5" ;;
-    claude-sonnet-4-0*|claude-sonnet-4-2025*) echo "Sonnet 4" ;;
-    claude-haiku-4-5*)                        echo "Haiku 4.5" ;;
+    claude-opus-4-8*)                         echo "Opus4.8" ;;
+    claude-opus-4-7*)                         echo "Opus4.7" ;;
+    claude-opus-4-6*)                         echo "Opus4.6" ;;
+    claude-opus-4-5*)                         echo "Opus4.5" ;;
+    claude-opus-4-1*)                         echo "Opus4.1" ;;
+    claude-opus-4-0*|claude-opus-4-2025*)     echo "Opus4" ;;
+    claude-sonnet-4-6*)                       echo "Sonnet4.6" ;;
+    claude-sonnet-4-5*)                       echo "Sonnet4.5" ;;
+    claude-sonnet-4-0*|claude-sonnet-4-2025*) echo "Sonnet4" ;;
+    claude-haiku-4-5*)                        echo "Haiku4.5" ;;
     *)                                        echo "$2" ;;
   esac
 }
@@ -109,13 +109,7 @@ cost_s=$(awk -v c="$cost" 'BEGIN{printf "$%.2f", c}')
 total_min=$(( dur / 60000 ))
 time_s=$(printf '%dh%02dm' "$(( total_min / 60 ))" "$(( total_min % 60 ))")
 
-left_plain="$path_disp"
-left="${PATH_C}${path_disp}${RESET}"
-if [[ -n "$branch" ]]; then
-  seg="${BRANCH_GLYPH} ${branch}"
-  left_plain+=" ${seg}"
-  left+=" ${BRANCH_C}${seg}${RESET}"
-fi
+path_last="${path_disp##*/}"
 
 model=$(model_short "$mid" "${display%% (*}")
 ctx=""
@@ -123,34 +117,47 @@ if [[ "$display" == *"("*"context)" ]]; then
   ctx="${display##*\(}"
   ctx="${ctx%% context)}"
 fi
-[[ -n "$ctx" ]] && model="$model [$ctx]"
-right_plain="$model"
-right="${MODEL_C}${model}${RESET}"
-if [[ -n "$effort" ]]; then
-  right_plain+=" $effort"
-  right+=" ${EFFORT_C}${effort}${RESET}"
-fi
-right_plain+=" $tok_s $cost_s $time_s"
-right+=" ${TOKENS_C}${tok_s}${RESET} ${COST_C}${cost_s}${RESET} ${TIME_C}${time_s}${RESET}"
+[[ -n "$ctx" ]] && model="${model}[${ctx}]"
 
 cols=${COLUMNS:-0}
 (( cols <= 0 )) && cols=80
 avail=$(( cols - ${STATUSLINE_MARGIN:-2} ))
 
-lw=$(dwidth "$left_plain")
-rw=$(dwidth "$right_plain")
+# Parts are dropped in this priority order when left+right is too wide:
+# time, effort, folder prefix (keep last folder only), branch, model.
+f_time=1; f_effort=1; f_prefix=1; f_branch=1; f_model=1
 
-if (( lw + 1 + rw > avail )); then
-  keep=$(( avail - rw - 3 ))
-  if (( keep > 0 )); then
-    left="${PATH_C}…${left_plain: -keep}${RESET}"
-  else
-    left="${PATH_C}…${RESET}"
+build() {
+  local p
+  local rp=() rc=()
+  if (( f_prefix )); then p="$path_disp"; else p="$path_last"; fi
+  left_plain="$p"
+  left="${PATH_C}${p}${RESET}"
+  if (( f_branch )) && [[ -n "$branch" ]]; then
+    left_plain="$left_plain ${BRANCH_GLYPH} ${branch}"
+    left="$left ${BRANCH_C}${BRANCH_GLYPH} ${branch}${RESET}"
   fi
-  pad=1
-else
-  pad=$(( avail - lw - rw ))
-  (( pad < 1 )) && pad=1
-fi
+  (( f_model )) && { rp+=("$model"); rc+=("${MODEL_C}${model}${RESET}"); }
+  if (( f_effort )) && [[ -n "$effort" ]]; then
+    rp+=("$effort"); rc+=("${EFFORT_C}${effort}${RESET}")
+  fi
+  rp+=("$tok_s"); rc+=("${TOKENS_C}${tok_s}${RESET}")
+  rp+=("$cost_s"); rc+=("${COST_C}${cost_s}${RESET}")
+  (( f_time )) && { rp+=("$time_s"); rc+=("${TIME_C}${time_s}${RESET}"); }
+  right_plain="${rp[*]}"
+  right="${rc[*]}"
+}
+
+fits() { (( $(dwidth "$left_plain") + 1 + $(dwidth "$right_plain") <= avail )); }
+
+build
+for flag in f_time f_effort f_prefix f_branch f_model; do
+  fits && break
+  printf -v "$flag" 0
+  build
+done
+
+pad=$(( avail - $(dwidth "$left_plain") - $(dwidth "$right_plain") ))
+(( pad < 1 )) && pad=1
 
 printf '%s%*s%s\n' "$left" "$pad" "" "$right"
