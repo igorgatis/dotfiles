@@ -9,10 +9,23 @@
 # On native Termux: invokes termux-open-url directly.
 
 FIFO="${XDG_OPEN_FIFO:-/tmp/xdg-open.fifo}"
+TIMEOUT="${XDG_OPEN_TIMEOUT:-5}"
+case "$TIMEOUT" in 0|*[!0-9]*) TIMEOUT=5;; esac
 
 if [ -p "$FIFO" ]; then
   [ "$#" -gt 0 ] || exit 0
-  for u in "$@"; do printf '%s\n' "$u"; done > "$FIFO"
+  # A live daemon holds the FIFO open so the write returns at once; if it has
+  # died the node lingers with no reader and the write hangs forever. Bound it.
+  if command -v timeout >/dev/null 2>&1; then
+    for u in "$@"; do printf '%s\n' "$u"; done | timeout "$TIMEOUT" tee "$FIFO" >/dev/null
+    if [ "$?" -ne 0 ]; then
+      echo "xdg-open: xdg-open-server not responding (timed out after ${TIMEOUT}s); open manually:" >&2
+      for u in "$@"; do printf '  %s\n' "$u" >&2; done
+      exit 1
+    fi
+  else
+    for u in "$@"; do printf '%s\n' "$u"; done > "$FIFO"
+  fi
 elif command -v termux-open-url >/dev/null 2>&1; then
   exec termux-open-url "$@"
 else
