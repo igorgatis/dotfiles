@@ -54,7 +54,7 @@ dwidth() {
 input=$(cat)
 
 if ! command -v jq >/dev/null 2>&1; then
-  printf '%s\n' "${ERR_C}statusline: jq not found — install jq (brew install jq)${RESET}"
+  printf '%s\n' "${ERR_C}(install jq)${RESET}"
   exit 0
 fi
 
