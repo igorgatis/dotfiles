@@ -15,6 +15,17 @@ if command -v proot-distro >/dev/null 2>&1; then
         "$__debian_rootfs/etc/profile" "$__debian_rootfs/etc/environment"
     fi
 
+    # proot keeps the host's supplementary groups, so the guest's %sudo group
+    # rule never applies to igorgatis; grant root via a username rule instead.
+    __sudoers="$__debian_rootfs/etc/sudoers.d/igorgatis"
+    __sudo_rule="igorgatis ALL=(ALL:ALL) NOPASSWD: ALL"
+    if [ "$(cat "$__sudoers" 2>/dev/null)" != "$__sudo_rule" ]; then
+      __tmp="$__sudoers.tmp.$$"
+      printf '%s\n' "$__sudo_rule" > "$__tmp" && chmod 0440 "$__tmp" && mv -f "$__tmp" "$__sudoers"
+      unset __tmp
+    fi
+    unset __sudoers __sudo_rule
+
     # Shared home: Termux $HOME becomes the guest home; re-overlay glibc-ABI dirs
     # from the rootfs so they aren't shadowed by Termux's bionic copies.
     __guest_home="/home/igorgatis"
