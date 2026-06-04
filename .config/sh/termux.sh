@@ -14,9 +14,18 @@ if command -v proot-distro >/dev/null 2>&1; then
       sed -i 's|:/data/data/com.termux/files/usr/bin:/system/bin:/system/xbin||g' \
         "$__debian_rootfs/etc/profile" "$__debian_rootfs/etc/environment"
     fi
-    unset __debian_rootfs
 
-    __debian_bind="--bind $HOME:$HOME"
+    # Shared home: Termux $HOME becomes the guest home; re-overlay glibc-ABI dirs
+    # from the rootfs so they aren't shadowed by Termux's bionic copies.
+    __guest_home="/home/igorgatis"
+    __debian_bind="--bind $HOME:$__guest_home"
+    for __d in .local/bin .local/share/mise .local/share/claude .local/share/pnpm \
+               .pulumi .cache .npm; do
+      __src="$__debian_rootfs/home/igorgatis/$__d"
+      mkdir -p "$__src"
+      __debian_bind="$__debian_bind --bind $__src:$__guest_home/$__d"
+    done
+    unset __d __src
     if command -v xdg-open-server >/dev/null 2>&1; then
       __fifo=$(xdg-open-server start 2>/dev/null) || __fifo=""
       [ -n "$__fifo" ] && __debian_bind="$__debian_bind --bind $__fifo:/tmp/xdg-open.fifo"
@@ -32,7 +41,7 @@ if command -v proot-distro >/dev/null 2>&1; then
         -- env -u __ENV_SOURCED bash -lc 'exec "$@"' bash "$@"
     fi
     __debian_rc=$?
-    unset __debian_bind
+    unset __debian_bind __debian_rootfs __guest_home
     return $__debian_rc
   }
 fi
