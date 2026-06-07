@@ -29,7 +29,8 @@ if command -v proot-distro >/dev/null 2>&1; then
     # Shared home: Termux $HOME becomes the guest home; re-overlay glibc-ABI dirs
     # from the rootfs so they aren't shadowed by Termux's bionic copies.
     __guest_home="/home/igorgatis"
-    __debian_bind="--bind $HOME:$__guest_home"
+    __termux_home="/data/data/com.termux/files/home"
+    __debian_bind="--bind $HOME:$__guest_home --bind $HOME:$__termux_home"
     for __d in .local/bin .local/share/mise .local/share/claude .local/share/pnpm \
                .pulumi .cache .npm; do
       __src="$__debian_rootfs/home/igorgatis/$__d"
@@ -52,7 +53,7 @@ if command -v proot-distro >/dev/null 2>&1; then
         -- env -u __ENV_SOURCED bash -lc 'exec "$@"' bash "$@"
     fi
     __debian_rc=$?
-    unset __debian_bind __debian_rootfs __guest_home
+    unset __debian_bind __debian_rootfs __guest_home __termux_home
     return $__debian_rc
   }
 fi
