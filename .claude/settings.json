@@ -211,18 +211,6 @@
     "deny": [],
     "defaultMode": "auto"
   },
-  "enabledPlugins": {
-    "code-review@claude-plugins-official": true
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/statusline.sh",
-    "padding": 0
-  },
-  "theme": "dark",
-  "tui": "fullscreen",
-  "voiceEnabled": true,
-  "skipAutoPermissionPrompt": true,
   "hooks": {
     "PreToolUse": [
       {
@@ -235,5 +223,18 @@
         ]
       }
     ]
-  }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh",
+    "padding": 0
+  },
+  "enabledPlugins": {
+    "code-review@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true
+  },
+  "tui": "fullscreen",
+  "theme": "dark",
+  "skipAutoPermissionPrompt": true,
+  "voiceEnabled": true
 }

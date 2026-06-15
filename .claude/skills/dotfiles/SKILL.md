@@ -11,6 +11,10 @@ allowed-tools: Read Edit Write Grep Glob Bash(sh ${CLAUDE_SKILL_DIR}/dotfiles-he
 Manage a yadm-tracked dotfiles repo (github.com/igorgatis/dotfiles).
 Parse the user's request from: $ARGUMENTS
 
+`yadm` is a specialized git for home dotfiles: it wraps git over a bare repo whose
+work-tree is `$HOME`. It accepts the same subcommands as git -- `yadm status`,
+`yadm diff`, `yadm log`, `yadm add`, `yadm commit`, `yadm push`, etc.
+
 ## Repository Layout
 
 Read files before editing. Key files:
