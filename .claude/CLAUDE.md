@@ -5,6 +5,6 @@
 - Avoid emojis
 - NEVER store passwords, secrets, or API keys in version-controlled files. No exceptions.
 - When making parallel tool calls, prefer grouping already-permitted calls separately from ones needing approval so permitted ones aren't blocked.
-- Store environment/machine-specific notes in memory; put cross-cutting concerns in CLAUDE.md or repo files.
+- Memory is a last resort. Prefer a precise technical fix in the actual config/code over a memory note, especially for environment issues. Always discuss with me before writing anything to memory.
 
 @RTK.md
