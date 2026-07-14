@@ -211,6 +211,7 @@
     "deny": [],
     "defaultMode": "auto"
   },
+  "model": "claude-fable-5[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -235,7 +236,8 @@
   },
   "tui": "fullscreen",
   "theme": "dark",
+  "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
   "voiceEnabled": true,
-  "agentPushNotifEnabled": true
+  "skipWorkflowUsageWarning": true
 }
