@@ -2,19 +2,16 @@
 add_newline = false
 format = """
 ${env_var.VIRTUAL_ENV}\
-$username\
 $hostname\
 $directory\
 $git_branch\
 $git_status\
 $character"""
 
-[username]
-format ="[($user )]($style)"
-
 [hostname]
 ssh_only = true
-format = "[($hostname )]($style)"
+ssh_symbol = "󰌘 "
+format = "[$ssh_symbol]($style)"
 style = "bright-green bold"
 
 [directory]
