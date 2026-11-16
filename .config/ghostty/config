@@ -7,3 +7,5 @@ shell-integration-features = no-cursor
 desktop-notifications = true
 
 quit-after-last-window-closed = true
+
+unfocused-split-opacity = 1
