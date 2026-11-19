@@ -225,6 +225,7 @@
     "deny": [],
     "defaultMode": "auto"
   },
+  "model": "fable",
   "hooks": {
     "PreToolUse": [
       {
@@ -250,6 +251,7 @@
   "tui": "fullscreen",
   "skipWorkflowUsageWarning": true,
   "theme": "dark",
+  "preferredNotifChannel": "iterm2",
   "remoteControlAtStartup": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
@@ -292,6 +294,5 @@
       "**Org-specific CLIs**: rtk (Rust Token Killer wrapper for git/pnpm/gh/etc., routine per CLAUDE.md and usage), rgx (frequently used in this project's transcripts), mise (toolchain bootstrap), pnpm (package manager; npx is disallowed by CLAUDE.md in favor of pnpm exec)"
     ]
   },
-  "voiceEnabled": true,
-  "preferredNotifChannel": "iterm2"
+  "voiceEnabled": true
 }
