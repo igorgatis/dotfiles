@@ -8,7 +8,8 @@
 
 if command -v proot-distro >/dev/null 2>&1; then
   debian() {
-    __debian_rootfs="$PREFIX/var/lib/proot-distro/installed-rootfs/debian"
+    __debian_rootfs="$PREFIX/var/lib/proot-distro/containers/debian/rootfs"
+    [ -d "$__debian_rootfs" ] || __debian_rootfs="$PREFIX/var/lib/proot-distro/installed-rootfs/debian"
     if [ -f "$__debian_rootfs/etc/profile" ] && \
        grep -q '/data/data/com.termux/files/usr/bin' "$__debian_rootfs/etc/profile" 2>/dev/null; then
       sed -i 's|:/data/data/com.termux/files/usr/bin:/system/bin:/system/xbin||g' \
