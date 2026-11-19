@@ -16,6 +16,17 @@ if command -v proot-distro >/dev/null 2>&1; then
         "$__debian_rootfs/etc/profile" "$__debian_rootfs/etc/environment"
     fi
 
+    # proot-distro <= 5.3 always binds /proc/self/fd over /dev/fd, which proot
+    # pins to its own pid and breaks bash <(...). The host symlink works as is.
+    if [ -L /dev/fd ]; then
+      for __pd_cmd in "$PREFIX"/lib/python*/site-packages/proot_distro/commands/login/proot_cmd.py; do
+        if grep -q '^[[:space:]]*"--bind=/proc/self/fd:/dev/fd",$' "$__pd_cmd" 2>/dev/null; then
+          sed -i '/^[[:space:]]*"--bind=\/proc\/self\/fd:\/dev\/fd",$/d' "$__pd_cmd"
+        fi
+      done
+      unset __pd_cmd
+    fi
+
     # proot keeps the host's supplementary groups, so the guest's %sudo group
     # rule never applies to igorgatis; grant root via a username rule instead.
     __sudoers="$__debian_rootfs/etc/sudoers.d/igorgatis"
