@@ -121,7 +121,7 @@ fi
 
 cols=${COLUMNS:-0}
 (( cols <= 0 )) && cols=80
-avail=$(( cols - ${STATUSLINE_MARGIN:-2} ))
+avail=$(( cols - ${STATUSLINE_MARGIN:-3} ))
 
 # Parts are dropped in this priority order when left+right is too wide:
 # time, effort, folder prefix (keep last folder only), branch, model.
