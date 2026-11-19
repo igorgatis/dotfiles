@@ -58,7 +58,7 @@ if ! command -v jq >/dev/null 2>&1; then
   exit 0
 fi
 
-IFS=$'\037' read -r cwd display mid effort tin tout cost dur < <(
+IFS=$'\037' read -r cwd display mid effort tin tout cost dur <<< "$(
   printf '%s' "$input" | jq -j '
     [ (.workspace.current_dir // .cwd // ""),
       (.model.display_name // "?"),
@@ -69,7 +69,7 @@ IFS=$'\037' read -r cwd display mid effort tin tout cost dur < <(
       (.cost.total_cost_usd // 0),
       (.cost.total_duration_ms // 0)
     ] | map(tostring) | join("")'
-)
+)"
 
 home="${HOME:-$(printf '%s' ~)}"
 if [[ "$cwd" == "$home" || "$cwd" == "$home"/* ]]; then
